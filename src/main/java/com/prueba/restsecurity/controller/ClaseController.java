@@ -5,6 +5,9 @@ import com.prueba.restsecurity.dto.ClaseDTO;
 import com.prueba.restsecurity.mapper.AlumnoMapper;
 import com.prueba.restsecurity.mapper.ClaseMapper;
 import com.prueba.restsecurity.service.ClaseService;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -24,6 +27,7 @@ public class ClaseController {
     }
 
     @GetMapping
+    @Cacheable("clases")
     public List<ClaseDTO> getAll() {
         return claseMapper.daoToDtoList(
             claseService.getAll()
@@ -40,6 +44,7 @@ public class ClaseController {
 
 
     @PostMapping
+    @CacheEvict(value = "clases", allEntries = true)
     public ClaseDTO create(@RequestBody ClaseDTO claseDTO) {
         return claseMapper.daoToDto(
             claseService.create(
